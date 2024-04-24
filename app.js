@@ -37,7 +37,7 @@ app.post('/movies/', async (req, res) => {
 
   const query = `INSERT INTO Movie (director_id , movie_name , lead_actor) VALUES (? , ? , ?)`
   const DBres = await db.run(query, [directorId, movieName, leadActor])
-  res.send('Movie Successfully Adde')
+  res.send('Movie Successfully Added')
 })
 
 // API 3
@@ -85,3 +85,26 @@ app.delete('/movies/:movieId', async (req, res) => {
     res.status(500).send('Error removing movie')
   }
 })
+
+//API 6
+app.get('/directors/', async (req, res) => {
+  const query = `SELECT 
+  director_id as directorId ,
+  director_name as directorName
+  FROM Director`
+
+  const DBres = await db.all(query)
+  res.send(DBres)
+})
+
+//API 7
+app.get('/directors/:directorId/movies/', async (req, res) => {
+  const {directorId} = req.params
+
+  const query = `SELECT movie_name as movieName FROM Movie WHERE director_id = ? `
+
+  const DBres = await db.all(query, directorId)
+  res.send(DBres)
+})
+
+module.exports = app
